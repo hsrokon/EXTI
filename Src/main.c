@@ -18,4 +18,7 @@ void main(){
 
 	AFIO->EXTICR[0] &= ~(0xF<<0);//Clearing EXTI0
 	AFIO->EXTICR[0] |= (0x0<<0);//Connecting EXTI0 for PA0
+
+	//FTSR(Falling Trigger Selection Register) Falling Edge- 3.3v to 0v)
+	//IMR(Interrupt Mask Register)
 }
