@@ -20,5 +20,8 @@ void main(){
 	AFIO->EXTICR[0] |= (0x0<<0);//Connecting EXTI0 for PA0
 
 	//FTSR(Falling Trigger Selection Register) Falling Edge- 3.3v to 0v)
+	EXTI->FTSR |= (1<<0);//When the button falls 3.3-0v it will trigger
+
 	//IMR(Interrupt Mask Register)
+	EXTI->IMR |= (1<<0);//Interrupt trigger signal is allowed to go to CPU by unmasking
 }
