@@ -26,7 +26,6 @@ void main(){
 	EXTI->IMR |= (1<<0);//Interrupt trigger signal is allowed to go to CPU by unmasking
 
 	//NVIC(Nested Vectored Interrupt Controller)
-
 	//IRQ=Interrupt Request
 	//ISR=Interrupt Service Routine
 	/*
@@ -36,4 +35,17 @@ void main(){
 	 * Clears Pending flag, interrupt marked solved
 	 * Restore saved register, and resume while(1)
 	 */
+
+	//CMSIS(Cortex Microcontroller Software Interface Standard)
+	NVIC_EnableIRQ(EXTI0_IRQn);//core_cm3.h CMSIS function that enables an interrupt
+
+	//Keeping CPU alive while waiting for hardware interrupts
+	while(1){
+		//It uses minimal energy, while keeping the CPU awake
+	}
+}
+
+//Setting the interrupt with Interrupt Request Handler Function
+void EXTI0_IRQHandler(void){
+	//Setting/Resetting/Checking the pending bit
 }
