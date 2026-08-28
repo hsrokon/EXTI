@@ -24,4 +24,16 @@ void main(){
 
 	//IMR(Interrupt Mask Register)
 	EXTI->IMR |= (1<<0);//Interrupt trigger signal is allowed to go to CPU by unmasking
+
+	//NVIC(Nested Vectored Interrupt Controller)
+
+	//IRQ=Interrupt Request
+	//ISR=Interrupt Service Routine
+	/*
+	 * Interrupt request signal comes to CPU
+	 * It saves Current Register State
+	 * Runs ISR
+	 * Clears Pending flag, interrupt marked solved
+	 * Restore saved register, and resume while(1)
+	 */
 }
