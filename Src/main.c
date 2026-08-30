@@ -37,7 +37,7 @@ void main(){
 	 */
 
 	//CMSIS(Cortex Microcontroller Software Interface Standard)
-	NVIC_EnableIRQ(EXTI0_IRQn);//core_cm3.h CMSIS function that enables an interrupt
+	NVIC_EnableIRQ(EXTI0_IRQn);//core_cm3.h CMSIS function that enables and points to EXTI0_IRQHandler
 
 	//Keeping CPU alive while waiting for hardware interrupts
 	while(1){
@@ -48,4 +48,7 @@ void main(){
 //Setting the interrupt with Interrupt Request Handler Function
 void EXTI0_IRQHandler(void){
 	//Setting/Resetting/Checking the pending bit
+
 }
+
+//rc_w1 = Read Clear by Writing 1
