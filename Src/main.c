@@ -15,9 +15,14 @@ void main(){
 
 	GPIOA->CRL |= (0x3<<4);//Configuring PA1 as GPO Max 50 Hz output
 
-
+	/*
+	 * EXTICR[0]: Governs lines EXTI0(for Px0, x=A,B,C,D), EXTI1, EXTI2, EXTI3
+	 * EXTICR[1]: Governs lines EXTI4, EXTI5, EXTI6, EXTI7
+	 * EXTICR[2]: Governs lines EXTI8, EXTI9, EXTI10, EXTI11
+	 * EXTICR[3]: Governs lines EXTI12, EXTI13, EXTI14, EXTI15
+	*/
 	AFIO->EXTICR[0] &= ~(0xF<<0);//Clearing EXTI0
-	AFIO->EXTICR[0] |= (0x0<<0);//Connecting EXTI0 for PA0
+	AFIO->EXTICR[0] |= (0x0<<0);//Connecting EXTI0 for PA0(0x0 is for PA0, 0x1 = PB0)
 
 	//FTSR(Falling Trigger Selection Register) Falling Edge- 3.3v to 0v)
 	EXTI->FTSR |= (1<<0);//When the button falls 3.3-0v it will trigger
@@ -34,10 +39,11 @@ void main(){
 	 * Runs ISR
 	 * Clears Pending flag, interrupt marked solved
 	 * Restore saved register, and resume while(1)
-	 */
+	*/
 
-	//CMSIS(Cortex Microcontroller Software Interface Standard)
-	NVIC_EnableIRQ(EXTI0_IRQn);//core_cm3.h CMSIS function that enables and points to EXTI0_IRQHandler
+	//CMSIS(Cortex Micro-controller Software Interface Standard)
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	//core_cm3.h, CMSIS function, that *enables* and points to EXTI0_IRQHandler
 
 	//Keeping CPU alive while waiting for hardware interrupts
 	while(1){
@@ -47,8 +53,19 @@ void main(){
 
 //Setting the interrupt with Interrupt Request Handler Function
 void EXTI0_IRQHandler(void){
-	//Setting/Resetting/Checking the pending bit
+	//Setting/Resetting/Checking the Pending Register(PR) - 10.3.6
+	//Check > Execute > Clear
 
+	//Check if EXTI Line 0 pending flag is set
+	if(EXTI->PR & (1<<0)){
+		/*Checking if EXTI Line 0(mapped to PA0)triggered this interrupt using
+		 bitwise and(&).
+		 *Line 0 active: 0000...0001 & 0000...0001 = 0000...0001 (Non-zero, execute ISR body)
+		 *Line 1 active: 0000...0010 & 0000...0001 = 0000...0000 (Zero, triggered by PA1, ignore)
+		 */
+
+
+	}
 }
 
 //rc_w1 = Read Clear by Writing 1
