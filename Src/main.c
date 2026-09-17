@@ -64,8 +64,10 @@ void EXTI0_IRQHandler(void){
 		 *Line 1 active: 0000...0010 & 0000...0001 = 0000...0000 (Zero, triggered by PA1, ignore)
 		 */
 
+		GPIOA->ODR^=(1<<1);//9.2.4
+		//XOR-Toogles: input 1, target mask bit 1 output 0, input 1 tar. mask bit 0 output 1
+
+		//rc_w1 = Read Clear by Writing 1
 
 	}
 }
-
-//rc_w1 = Read Clear by Writing 1
