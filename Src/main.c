@@ -2,7 +2,7 @@
 
 #include "exti.h"
 
-void main(){
+int main(){
 //EXTI code starts here
 
 	//8.3.7
@@ -13,6 +13,7 @@ void main(){
 	GPIOA->CRL |= (0x8<<0);//Configuring PA0 as input mode pull up/down
 	GPIOA->ODR |= (1<<0);//Setting PA0(as it is input) to pull up resistor.
 
+	GPIOA->CRL &= ~(0xF<<4);
 	GPIOA->CRL |= (0x3<<4);//Configuring PA1 as GPO Max 50 Hz output
 
 	/*
@@ -67,7 +68,7 @@ void EXTI0_IRQHandler(void){
 		GPIOA->ODR^=(1<<1);//9.2.4
 		//XOR-Toogles: input 1, target mask bit 1 output 0, input 1 tar. mask bit 0 output 1
 
+		EXTI->PR|=(1<<0);
 		//rc_w1 = Read Clear by Writing 1
-
 	}
 }
