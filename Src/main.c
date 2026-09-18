@@ -25,8 +25,9 @@ int main(){
 	AFIO->EXTICR[0] &= ~(0xF<<0);//Clearing EXTI0
 	AFIO->EXTICR[0] |= (0x0<<0);//Connecting EXTI0 for PA0(0x0 is for PA0, 0x1 = PB0)
 
-	//FTSR(Falling Trigger Selection Register) Falling Edge- 3.3v to 0v)
+	//FTSR(Falling Trigger Selection Register) Falling Edge- 3.3v to 0v) - Enabled
 	EXTI->FTSR |= (1<<0);//When the button falls 3.3-0v it will trigger
+	EXTI->RTSR &= ~(1<<0);//Rising Trigger disabled
 
 	//IMR(Interrupt Mask Register)
 	EXTI->IMR |= (1<<0);//Interrupt trigger signal is allowed to go to CPU by unmasking
@@ -65,10 +66,21 @@ void EXTI0_IRQHandler(void){
 		 *Line 1 active: 0000...0010 & 0000...0001 = 0000...0000 (Zero, triggered by PA1, ignore)
 		 */
 
-		GPIOA->ODR^=(1<<1);//9.2.4
-		//XOR-Toogles: input 1, target mask bit 1 output 0, input 1 tar. mask bit 0 output 1
-
-		EXTI->PR|=(1<<0);
+		EXTI->PR|=(1<<0);//first clear the PR so no pending bits
 		//rc_w1 = Read Clear by Writing 1
+
+		for(volatile int i=0; i< 40000; i++);//wait first for the switch to settle(~20ms at 72MHz)
+
+		//IDR=Input Data Register
+		if((GPIOA->IDR & (1<<0))==0){//Check if bit 0 evaluated to 0(logic low)
+
+			GPIOA->ODR^=(1<<1);//9.2.4
+			//XOR-Toogles: input 1, target mask bit 1 output 0, input 1 tar. mask bit 0 output 1
+
+			/*This way we only toggle after waiting 15ms and checking
+			 if we are still keeping button low buy holding the physical press*/
+		}
+		EXTI->PR |= (1<<0);/*Clearing it again so any new trigger happen during
+		the initial 20ms delay and that does not trigger the CPU to re jump to do ISR */
 	}
 }
